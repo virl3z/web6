@@ -5,239 +5,127 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+    padding: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
+    min-height: 100vh;
 }
 
 .calculator-container {
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    padding: 40px;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
     width: 100%;
-    max-width: 600px;
-    transition: all 0.3s ease;
+    max-width: 500px;
 }
 
 h1 {
-    color: #2c3e50;
     text-align: center;
     margin-bottom: 30px;
-    font-size: 28px;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 15px;
+    color: #333;
 }
 
 .form-group {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    color: #34495e;
-    font-weight: 600;
-    font-size: 16px;
+    font-weight: bold;
+    color: #555;
 }
 
 input[type="number"] {
     width: 100%;
-    padding: 12px 15px;
+    padding: 10px;
     border: 2px solid #ddd;
-    border-radius: 8px;
+    border-radius: 5px;
     font-size: 16px;
-    transition: border-color 0.3s ease;
 }
 
 input[type="number"]:focus {
-    border-color: #3498db;
+    border-color: #4CAF50;
     outline: none;
 }
 
 .radio-group {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
 }
 
 .radio-label {
     display: flex;
     align-items: center;
     padding: 15px;
-    background: #f8f9fa;
-    border: 2px solid #e9ecef;
+    border: 2px solid #ddd;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
 }
 
 .radio-label:hover {
-    background: #e3f2fd;
-    border-color: #bbdefb;
+    border-color: #4CAF50;
+    background: #f9f9f9;
 }
 
-.radio-label input[type="radio"] {
-    margin-right: 15px;
-    transform: scale(1.2);
-}
-
-.radio-label span:first-of-type {
-    flex-grow: 1;
-    font-weight: 500;
+.radio-label input {
+    margin-right: 10px;
 }
 
 .price-info {
-    color: #3498db;
+    margin-left: auto;
+    color: #4CAF50;
     font-weight: bold;
-    background: #e3f2fd;
-    padding: 5px 10px;
-    border-radius: 5px;
-    font-size: 14px;
 }
 
 select {
     width: 100%;
-    padding: 12px 15px;
+    padding: 10px;
     border: 2px solid #ddd;
-    border-radius: 8px;
+    border-radius: 5px;
     font-size: 16px;
-    background: white;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
-}
-
-select:focus {
-    border-color: #3498db;
-    outline: none;
 }
 
 .checkbox-label {
     display: flex;
     align-items: center;
     padding: 15px;
-    background: #f8f9fa;
-    border: 2px solid #e9ecef;
+    border: 2px solid #ddd;
     border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
 }
 
-.checkbox-label:hover {
-    background: #e3f2fd;
-    border-color: #bbdefb;
-}
-
-.checkbox-label input[type="checkbox"] {
-    margin-right: 15px;
-    transform: scale(1.2);
+.checkbox-label input {
+    margin-right: 10px;
 }
 
 .result-section {
     margin-top: 30px;
-    padding: 25px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 10px;
+    padding: 20px;
+    background: #4CAF50;
     color: white;
+    border-radius: 8px;
 }
 
 .result-section h2 {
-    font-size: 20px;
     margin-bottom: 15px;
-    opacity: 0.9;
 }
 
 .total-price {
-    font-size: 42px;
+    font-size: 36px;
     font-weight: bold;
     text-align: center;
-    margin: 20px 0;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 15px 0;
 }
 
 .price-breakdown {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255,255,255,0.2);
     padding: 15px;
-    border-radius: 8px;
+    border-radius: 5px;
     font-size: 14px;
-    line-height: 1.5;
-}
-
-/* Анимация появления элементов */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.fade-in {
-    animation: fadeIn 0.3s ease forwards;
-}
-
-/* Анимация изменения цены */
-@keyframes priceChange {
-    0% {
-        transform: scale(1);
-        color: #3498db;
-    }
-    50% {
-        transform: scale(1.05);
-        color: #e74c3c;
-    }
-    100% {
-        transform: scale(1);
-        color: white;
-    }
-}
-
-.price-change {
-    animation: priceChange 0.3s ease;
-}
-
-/* Адаптивность */
-@media (max-width: 768px) {
-    .calculator-container {
-        padding: 25px;
-        margin: 10px;
-    }
-    
-    h1 {
-        font-size: 24px;
-    }
-    
-    .total-price {
-        font-size: 36px;
-    }
-}
-
-/* Улучшение визуальной обратной связи */
-input[type="number"]:focus,
-select:focus {
-    border-color: #3498db;
-    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
-    outline: none;
-}
-
-.radio-label input[type="radio"]:checked ~ span:first-of-type {
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-.checkbox-label input[type="checkbox"]:checked ~ span {
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-.radio-label input[type="radio"]:checked ~ .price-info {
-    background: #3498db;
-    color: white;
 }
