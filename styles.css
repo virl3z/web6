@@ -198,3 +198,41 @@ select:focus {
         font-size: 36px;
     }
 }
+
+/* Анимация изменения цены */
+@keyframes priceChange {
+    0% {
+        transform: scale(1);
+        color: #3498db;
+    }
+    50% {
+        transform: scale(1.05);
+        color: #e74c3c;
+    }
+    100% {
+        transform: scale(1);
+        color: #2c3e50;
+    }
+}
+
+.price-change {
+    animation: priceChange 0.3s ease;
+}
+
+/* Стиль для активной радиокнопки */
+.radio-label input[type="radio"]:checked + span {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* Стиль для активного чекбокса */
+.checkbox-label input[type="checkbox"]:checked + span {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+/* Стиль для активного селекта */
+select:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
