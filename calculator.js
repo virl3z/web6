@@ -1,18 +1,18 @@
 // Базовые цены для каждого типа услуги
 const servicePrices = {
-    basic: 1500,
-    premium: 3000,
-    vip: 5000
+    basic: 1500,    // Базовая консультация
+    premium: 3000,  // Премиум поддержка
+    vip: 5000       // VIP обслуживание
 };
 
-// Модификаторы цен для опци
+// Модификаторы цен для опций (премиум)
 const optionModifiers = {
-    standard: 1.0,
-    priority: 1.2,
-    express: 1.4
+    standard: 1.0,    // Стандартная (без изменения)
+    priority: 1.2,    // Приоритетная (+20%)
+    express: 1.4      // Экспресс (+40%)
 };
 
-// Получаем все элементы ДОМ
+// DOM элементы
 const quantityInput = document.getElementById('quantity');
 const serviceRadios = document.querySelectorAll('input[name="service-type"]');
 const optionsContainer = document.getElementById('options-container');
@@ -22,9 +22,9 @@ const serviceProperty = document.getElementById('service-property');
 const totalPriceElement = document.getElementById('total-price');
 const priceBreakdownElement = document.getElementById('price-breakdown');
 
-// Функция инициализации калькулятора
+// Инициализация калькулятора
 function initCalculator() {
-    console.log('Инициализация калькулятора...');
+    console.log('Калькулятор инициализирован');
     
     // Настройка обработчиков событий
     setupEventListeners();
@@ -35,17 +35,16 @@ function initCalculator() {
 
 // Настройка всех обработчиков событий
 function setupEventListeners() {
-    console.log('Настройка обработчиков событий...');
+    console.log('Настройка обработчиков событий');
     
-    // Обработчик изменения количества (срабатывает сразу при вводе)
+    // Обработчик изменения количества
     quantityInput.addEventListener('input', function() {
-        console.log('Количество изменено:', this.value);
+        console.log('Количество изменено на:', this.value);
         updateCalculation();
     });
     
-    // Обработчик изменения количества (при потере фокуса)
+    // Валидация количества при потере фокуса
     quantityInput.addEventListener('change', function() {
-        console.log('Количество изменено (change):', this.value);
         if (this.value < 1 || this.value === '') {
             this.value = 1;
         }
@@ -55,7 +54,7 @@ function setupEventListeners() {
     // Обработчики изменения типа услуги
     serviceRadios.forEach(radio => {
         radio.addEventListener('change', function() {
-            console.log('Тип услуги изменен:', this.value);
+            console.log('Тип услуги изменен на:', this.value);
             updateInterface();
             updateCalculation();
         });
@@ -63,7 +62,7 @@ function setupEventListeners() {
     
     // Обработчик изменения опции
     serviceOption.addEventListener('change', function() {
-        console.log('Опция изменена:', this.value);
+        console.log('Опция изменена на:', this.value);
         updateCalculation();
     });
     
@@ -72,23 +71,13 @@ function setupEventListeners() {
         console.log('Свойство изменено:', this.checked);
         updateCalculation();
     });
-    
-    // Также обрабатываем клики по радиокнопкам (для надежности)
-    serviceRadios.forEach(radio => {
-        radio.addEventListener('click', function() {
-            console.log('Клик по радиокнопке:', this.value);
-            updateInterface();
-            updateCalculation();
-        });
-    });
 }
 
 // Обновление интерфейса в зависимости от типа услуги
 function updateInterface() {
-    const selectedRadio = document.querySelector('input[name="service-type"]:checked');
-    if (!selectedRadio) return;
+    const selectedService = document.querySelector('input[name="service-type"]:checked').value;
     
-    const selectedService = selectedRadio.value;
+    console.log('Обновление интерфейса для типа:', selectedService);
     
     // Показываем/скрываем дополнительные элементы
     switch(selectedService) {
@@ -109,82 +98,74 @@ function updateInterface() {
     }
 }
 
-// Расчет и обновление стоимости
+// Функция расчета и обновления стоимости
 function updateCalculation() {
     console.log('Пересчет стоимости...');
     
     // Получаем текущие значения
-    const selectedRadio = document.querySelector('input[name="service-type"]:checked');
-    if (!selectedRadio) return;
-    
-    const selectedService = selectedRadio.value;
+    const selectedService = document.querySelector('input[name="service-type"]:checked').value;
     const quantity = parseInt(quantityInput.value) || 1;
     
-    // Базовый расчет
+    // Расчет базовой стоимости
     let basePrice = servicePrices[selectedService];
     let total = basePrice * quantity;
+    let breakdownText = '';
     
-    // Детализация расчета
-    let breakdown = [];
-    
-    // Названия услуг
+    // Форматирование названия услуги
     const serviceNames = {
         basic: 'Базовая консультация',
         premium: 'Премиум поддержка',
         vip: 'VIP обслуживание'
     };
     
-    breakdown.push(`${serviceNames[selectedService]} × ${quantity} = ${formatPrice(basePrice * quantity)}`);
+    breakdownText = `${serviceNames[selectedService]} × ${quantity} = ${formatPrice(basePrice * quantity)}`;
     
-    // Дополнительные настройки для premium
+    // Применение модификаторов для premium
     if (selectedService === 'premium') {
         const optionValue = serviceOption.value;
         const modifier = optionModifiers[optionValue];
         total *= modifier;
         
         const optionNames = {
-            standard: 'Стандартная опция',
-            priority: 'Приоритетная опция (+20%)',
-            express: 'Экспресс опция (+40%)'
+            standard: 'Стандартная',
+            priority: 'Приоритетная',
+            express: 'Экспресс'
         };
         
+        breakdownText += `<br>Опция: ${optionNames[optionValue]}`;
         if (modifier > 1.0) {
-            breakdown.push(optionNames[optionValue]);
+            const percentage = Math.round((modifier - 1) * 100);
+            breakdownText += ` (+${percentage}%)`;
         }
     }
     
-    // Дополнительные настройки для vip
+    // Применение модификатора для vip
     if (selectedService === 'vip' && serviceProperty.checked) {
-        total *= 1.5;
-        breakdown.push('Круглосуточная поддержка (+50%)');
+        total *= 1.5; // +50%
+        breakdownText += `<br>Дополнительно: круглосуточная поддержка (+50%)`;
     }
     
-    // Обновляем отображение
+    console.log('Итоговая сумма:', total);
+    
+    // Обновление отображения
     totalPriceElement.textContent = formatPrice(total);
-    priceBreakdownElement.innerHTML = breakdown.join('<br>');
+    priceBreakdownElement.innerHTML = breakdownText;
     
     // Анимация изменения цены
-    totalPriceElement.classList.remove('price-change');
-    void totalPriceElement.offsetWidth; // Сброс анимации
     totalPriceElement.classList.add('price-change');
+    setTimeout(() => {
+        totalPriceElement.classList.remove('price-change');
+    }, 300);
 }
 
-// Форматирование цены
+// Функция форматирования цены
 function formatPrice(price) {
-    return price.toLocaleString('ru-RU', {
+    return new Intl.NumberFormat('ru-RU', {
         style: 'currency',
         currency: 'RUB',
         minimumFractionDigits: 0
-    });
+    }).format(price);
 }
 
 // Запуск калькулятора при загрузке страницы
 document.addEventListener('DOMContentLoaded', initCalculator);
-
-// Также запускаем при полной загрузке страницы (для надежности)
-window.addEventListener('load', function() {
-    console.log('Страница загружена');
-    updateInterface(); // Гарантируем правильное отображение интерфейса
-    updateCalculation(); // Гарантируем правильный расчет
-});
-
