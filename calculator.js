@@ -35,18 +35,14 @@ document.addEventListener('DOMContentLoaded', function() {
         propertyGroup.style.display = 'none';
         
         // Показываем нужные элементы в зависимости от типа услуги
-        switch(selectedService) {
-            case 'basic':
-                // Базовый - ничего не показываем
-                break;
-            case 'premium':
-                // Премиум - показываем только опции
-                optionsGroup.style.display = 'block';
-                break;
-            case 'vip':
-                // VIP - показываем только свойство
-                propertyGroup.style.display = 'block';
-                break;
+        if (selectedService === 'basic') {
+            // Базовый - ничего не показываем
+        } else if (selectedService === 'premium') {
+            // Премиум - показываем только опции
+            optionsGroup.style.display = 'block';
+        } else if (selectedService === 'vip') {
+            // VIP - показываем только свойство
+            propertyGroup.style.display = 'block';
         }
     }
     
@@ -83,29 +79,21 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Формируем детали расчета
         let details = '';
-        switch(selectedService) {
-            case 'basic':
-                details = `Базовая консультация × ${quantity} = ${totalPrice} руб.`;
-                break;
-            case 'premium':
-                let optionText = '';
-                switch(selectedOption) {
-                    case 'standard': 
-                        optionText = 'Стандартная поддержка'; 
-                        break;
-                    case 'extended': 
-                        optionText = 'Расширенная поддержка'; 
-                        break;
-                    case 'priority': 
-                        optionText = 'Приоритетная поддержка'; 
-                        break;
-                }
-                details = `Премиум поддержка (${optionText}) × ${quantity} = ${totalPrice} руб.`;
-                break;
-            case 'vip':
-                let propertyText = hasProperty ? ' с экстренной поддержкой 24/7' : '';
-                details = `VIP обслуживание${propertyText} × ${quantity} = ${totalPrice} руб.`;
-                break;
+        if (selectedService === 'basic') {
+            details = `Базовая консультация × ${quantity} = ${totalPrice} руб.`;
+        } else if (selectedService === 'premium') {
+            let optionText = '';
+            if (selectedOption === 'standard') {
+                optionText = 'Стандартная поддержка';
+            } else if (selectedOption === 'extended') {
+                optionText = 'Расширенная поддержка';
+            } else if (selectedOption === 'priority') {
+                optionText = 'Приоритетная поддержка';
+            }
+            details = `Премиум поддержка (${optionText}) × ${quantity} = ${totalPrice} руб.`;
+        } else if (selectedService === 'vip') {
+            let propertyText = hasProperty ? ' с экстренной поддержкой 24/7' : '';
+            details = `VIP обслуживание${propertyText} × ${quantity} = ${totalPrice} руб.`;
         }
         
         calculationDetailsElement.textContent = details;
@@ -114,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Назначаем обработчики событий
     quantityInput.addEventListener('input', calculateTotal);
     
-    serviceRadios.forEach(radio => {
+    serviceRadios.forEach(function(radio) {
         radio.addEventListener('change', function() {
             updateFormVisibility();
             calculateTotal();
@@ -135,4 +123,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         calculateTotal();
     });
-}); // <-- Закрывающая скобка для DOMContentLoaded
+});
