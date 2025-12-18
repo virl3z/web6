@@ -1,18 +1,18 @@
 // Базовые цены для каждого типа услуги
 const servicePrices = {
-    basic: 1500,    // Базовая консультация
-    premium: 3000,  // Премиум поддержка
-    vip: 5000       // VIP обслуживание
+    basic: 1500,
+    premium: 3000,
+    vip: 5000
 };
 
-// Модификаторы цен для опций (премиум)
+// Модификаторы цен для опций
 const optionModifiers = {
-    standard: 1.0,    // Стандартная (без изменения)
-    priority: 1.2,    // Приоритетная (+20%)
-    express: 1.4      // Экспресс (+40%)
+    standard: 1.0,
+    priority: 1.2,
+    express: 1.4
 };
 
-// DOM элементы
+// Получаем все элементы ДОМ
 const quantityInput = document.getElementById('quantity');
 const serviceRadios = document.querySelectorAll('input[name="service-type"]');
 const optionsContainer = document.getElementById('options-container');
@@ -22,9 +22,11 @@ const serviceProperty = document.getElementById('service-property');
 const totalPriceElement = document.getElementById('total-price');
 const priceBreakdownElement = document.getElementById('price-breakdown');
 
-// Инициализация калькулятора
+// Функция инициализации калькулятора
 function initCalculator() {
-    // Установка обработчиков событий для всех элементов
+    console.log('Инициализация калькулятора...');
+    
+    // Настройка обработчиков событий
     setupEventListeners();
     
     // Первоначальный расчет
@@ -33,13 +35,18 @@ function initCalculator() {
 
 // Настройка всех обработчиков событий
 function setupEventListeners() {
-    // Обработчик изменения количества
+    console.log('Настройка обработчиков событий...');
+    
+    // Обработчик изменения количества (срабатывает сразу при вводе)
     quantityInput.addEventListener('input', function() {
+        console.log('Количество изменено:', this.value);
         updateCalculation();
     });
     
+    // Обработчик изменения количества (при потере фокуса)
     quantityInput.addEventListener('change', function() {
-        if (this.value < 1) {
+        console.log('Количество изменено (change):', this.value);
+        if (this.value < 1 || this.value === '') {
             this.value = 1;
         }
         updateCalculation();
@@ -48,123 +55,135 @@ function setupEventListeners() {
     // Обработчики изменения типа услуги
     serviceRadios.forEach(radio => {
         radio.addEventListener('change', function() {
+            console.log('Тип услуги изменен:', this.value);
             updateInterface();
             updateCalculation();
         });
     });
     
     // Обработчик изменения опции
-    if (serviceOption) {
-        serviceOption.addEventListener('change', updateCalculation);
-    }
+    serviceOption.addEventListener('change', function() {
+        console.log('Опция изменена:', this.value);
+        updateCalculation();
+    });
     
     // Обработчик изменения свойства
-    if (serviceProperty) {
-        serviceProperty.addEventListener('change', updateCalculation);
-    }
+    serviceProperty.addEventListener('change', function() {
+        console.log('Свойство изменено:', this.checked);
+        updateCalculation();
+    });
+    
+    // Также обрабатываем клики по радиокнопкам (для надежности)
+    serviceRadios.forEach(radio => {
+        radio.addEventListener('click', function() {
+            console.log('Клик по радиокнопке:', this.value);
+            updateInterface();
+            updateCalculation();
+        });
+    });
 }
 
 // Обновление интерфейса в зависимости от типа услуги
 function updateInterface() {
-    const selectedService = document.querySelector('input[name="service-type"]:checked').value;
+    const selectedRadio = document.querySelector('input[name="service-type"]:checked');
+    if (!selectedRadio) return;
     
+    const selectedService = selectedRadio.value;
+    
+    // Показываем/скрываем дополнительные элементы
     switch(selectedService) {
         case 'basic':
-            hideElement(optionsContainer);
-            hideElement(propertyContainer);
+            optionsContainer.style.display = 'none';
+            propertyContainer.style.display = 'none';
             break;
             
         case 'premium':
-            showElement(optionsContainer);
-            hideElement(propertyContainer);
+            optionsContainer.style.display = 'block';
+            propertyContainer.style.display = 'none';
             break;
             
         case 'vip':
-            hideElement(optionsContainer);
-            showElement(propertyContainer);
+            optionsContainer.style.display = 'none';
+            propertyContainer.style.display = 'block';
             break;
     }
 }
 
-// Функция показа элемента с анимацией
-function showElement(element) {
-    if (element) {
-        element.style.display = 'block';
-        element.classList.add('fade-in');
-    }
-}
-
-// Функция скрытия элемента
-function hideElement(element) {
-    if (element) {
-        element.style.display = 'none';
-        element.classList.remove('fade-in');
-    }
-}
-
-// Функция расчета и обновления стоимости
+// Расчет и обновление стоимости
 function updateCalculation() {
-    // Получение текущих значений
-    const selectedService = document.querySelector('input[name="service-type"]:checked').value;
+    console.log('Пересчет стоимости...');
+    
+    // Получаем текущие значения
+    const selectedRadio = document.querySelector('input[name="service-type"]:checked');
+    if (!selectedRadio) return;
+    
+    const selectedService = selectedRadio.value;
     const quantity = parseInt(quantityInput.value) || 1;
     
-    // Расчет базовой стоимости
+    // Базовый расчет
     let basePrice = servicePrices[selectedService];
     let total = basePrice * quantity;
-    let breakdownText = '';
     
-    // Форматирование названия услуги
+    // Детализация расчета
+    let breakdown = [];
+    
+    // Названия услуг
     const serviceNames = {
         basic: 'Базовая консультация',
         premium: 'Премиум поддержка',
         vip: 'VIP обслуживание'
     };
     
-    breakdownText = `${serviceNames[selectedService]} × ${quantity} = ${formatPrice(basePrice * quantity)}`;
+    breakdown.push(`${serviceNames[selectedService]} × ${quantity} = ${formatPrice(basePrice * quantity)}`);
     
-    // Применение модификаторов для premium
-    if (selectedService === 'premium' && serviceOption) {
-        const modifier = optionModifiers[serviceOption.value];
+    // Дополнительные настройки для premium
+    if (selectedService === 'premium') {
+        const optionValue = serviceOption.value;
+        const modifier = optionModifiers[optionValue];
         total *= modifier;
         
         const optionNames = {
-            standard: 'Стандартная',
-            priority: 'Приоритетная',
-            express: 'Экспресс'
+            standard: 'Стандартная опция',
+            priority: 'Приоритетная опция (+20%)',
+            express: 'Экспресс опция (+40%)'
         };
         
-        breakdownText += `<br>Опция: ${optionNames[serviceOption.value]}`;
         if (modifier > 1.0) {
-            const percentage = Math.round((modifier - 1) * 100);
-            breakdownText += ` (+${percentage}%)`;
+            breakdown.push(optionNames[optionValue]);
         }
     }
     
-    // Применение модификатора для vip
-    if (selectedService === 'vip' && serviceProperty && serviceProperty.checked) {
-        total *= 1.5; // +50%
-        breakdownText += `<br>Дополнительно: круглосуточная поддержка (+50%)`;
+    // Дополнительные настройки для vip
+    if (selectedService === 'vip' && serviceProperty.checked) {
+        total *= 1.5;
+        breakdown.push('Круглосуточная поддержка (+50%)');
     }
     
-    // Обновление отображения
+    // Обновляем отображение
     totalPriceElement.textContent = formatPrice(total);
-    priceBreakdownElement.innerHTML = breakdownText;
+    priceBreakdownElement.innerHTML = breakdown.join('<br>');
     
-    // Добавляем анимацию изменения цены
+    // Анимация изменения цены
+    totalPriceElement.classList.remove('price-change');
+    void totalPriceElement.offsetWidth; // Сброс анимации
     totalPriceElement.classList.add('price-change');
-    setTimeout(() => {
-        totalPriceElement.classList.remove('price-change');
-    }, 300);
 }
 
-// Функция форматирования цены
+// Форматирование цены
 function formatPrice(price) {
-    return new Intl.NumberFormat('ru-RU', {
+    return price.toLocaleString('ru-RU', {
         style: 'currency',
         currency: 'RUB',
         minimumFractionDigits: 0
-    }).format(price);
+    });
 }
 
-// Инициализация при загрузке страницы
+// Запуск калькулятора при загрузке страницы
 document.addEventListener('DOMContentLoaded', initCalculator);
+
+// Также запускаем при полной загрузке страницы (для надежности)
+window.addEventListener('load', function() {
+    console.log('Страница загружена');
+    updateInterface(); // Гарантируем правильное отображение интерфейса
+    updateCalculation(); // Гарантируем правильный расчет
+});
