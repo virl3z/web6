@@ -183,6 +183,26 @@ select:focus {
     animation: fadeIn 0.3s ease forwards;
 }
 
+/* Анимация изменения цены */
+@keyframes priceChange {
+    0% {
+        transform: scale(1);
+        color: #3498db;
+    }
+    50% {
+        transform: scale(1.05);
+        color: #e74c3c;
+    }
+    100% {
+        transform: scale(1);
+        color: white;
+    }
+}
+
+.price-change {
+    animation: priceChange 0.3s ease;
+}
+
 /* Адаптивность */
 @media (max-width: 768px) {
     .calculator-container {
@@ -199,40 +219,25 @@ select:focus {
     }
 }
 
-/* Анимация изменения цены */
-@keyframes priceChange {
-    0% {
-        transform: scale(1);
-        color: #3498db;
-    }
-    50% {
-        transform: scale(1.05);
-        color: #e74c3c;
-    }
-    100% {
-        transform: scale(1);
-        color: #2c3e50;
-    }
-}
-
-.price-change {
-    animation: priceChange 0.3s ease;
-}
-
-/* Стиль для активной радиокнопки */
-.radio-label input[type="radio"]:checked + span {
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-/* Стиль для активного чекбокса */
-.checkbox-label input[type="checkbox"]:checked + span {
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-/* Стиль для активного селекта */
+/* Улучшение визуальной обратной связи */
+input[type="number"]:focus,
 select:focus {
     border-color: #3498db;
     box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    outline: none;
+}
+
+.radio-label input[type="radio"]:checked ~ span:first-of-type {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.checkbox-label input[type="checkbox"]:checked ~ span {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.radio-label input[type="radio"]:checked ~ .price-info {
+    background: #3498db;
+    color: white;
 }
