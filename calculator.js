@@ -5,7 +5,7 @@ const servicePrices = {
     vip: 5000
 };
 
-// Модификаторы цен для опций
+// Модификаторы цен для опци
 const optionModifiers = {
     standard: 1.0,
     priority: 1.2,
@@ -187,3 +187,4 @@ window.addEventListener('load', function() {
     updateInterface(); // Гарантируем правильное отображение интерфейса
     updateCalculation(); // Гарантируем правильный расчет
 });
+
